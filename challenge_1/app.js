@@ -16,20 +16,20 @@ class Game {
 
     //calculate the score of the row
     checkRow(index) {
-        let score = 0;
-        for (var i = 0; i < 3; i++) {
-            score += this._board[index][i];
+        let current = this._board[index][0];
+        for (var i = 1; i < 3; i++) {
+            if (current !== this._board[index][i]) return false;
         }
-        return score;
+        return current;
     };
 
     //calculate the score of the column
     checkColumn(index) {
-        let score = 0;
-        for (var i = 0; i < 3; i++) {
-            score += this._board[i][index];
+        let current = this._board[0][index];
+        for (var i = 1; i < 3; i++) {
+            if (current !== this._board[i][index]) return false;
         }
-        return score;
+        return current;
     };
 
     //calculate the score of the diagonal
@@ -47,16 +47,20 @@ class Game {
     place(rowIndex, columnIndex) {
         this.game = true;
         if (!this.currentPlayer) {
-            this._board[rowIndex][columnIndex] = 1;
+            this._board[rowIndex][columnIndex] = "X";
         } else {
-            this._board[rowIndex][columnIndex] = 2;
+            this._board[rowIndex][columnIndex] = "O";
         }
         this.currentPlayer = !this.currentPlayer;
     };
 
     //check for the winner
     checkWinner(rowIndex, columnIndex) {
-
+        if (this.checkColumn(columnIndex)) {
+            console.log('column : ', this.checkColumn(columnIndex))
+        } else if (this.checkRow(rowIndex)) {
+            console.log('row : ', this.checkRow(rowIndex))
+        }
     }
     //restart the game
     restart() {
@@ -90,6 +94,7 @@ cases.forEach(elm => {
         let rowIndex = parseInt(e.target.id[0])
         let columnIndex = parseInt(e.target.id[1])
         play.place(rowIndex, columnIndex)
+        play.checkWinner(rowIndex, columnIndex)
         console.table(play._board)
     })
 })
