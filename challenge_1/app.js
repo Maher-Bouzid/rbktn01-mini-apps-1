@@ -1,4 +1,6 @@
-const cases = document.querySelectorAll(".playable");
+/* *******************************      DOM Varibles Declaration       ************************************* */
+
+const square = document.querySelectorAll(".playable");
 const start = document.querySelector('.start');
 const reset = document.querySelector('.reset');
 const container = document.querySelector('.game');
@@ -8,6 +10,7 @@ const player2_name = document.querySelector('#player2_name');
 const player1_score = document.querySelector('#player1_score');
 const player2_score = document.querySelector('#player2_score');
 
+/* *******************************      Classes Declaration       ************************************* */
 
 class Game {
     constructor() {
@@ -69,38 +72,41 @@ class Game {
         } else {
             return checkSecondDiagonal(0, 2)
         }
-    }
+    };
 
-    //place the piece
+    //check for the winner and return it
+    checkWinner(rowIndex, columnIndex) {
+        if (this.checkColumn(columnIndex)) {
+            return this.checkColumn(columnIndex);
+        } else if (this.checkRow(rowIndex)) {
+            return this.checkRow(rowIndex);
+        } else if (this.checkDiagonals(rowIndex, columnIndex)) {
+            return this.checkDiagonals(rowIndex, columnIndex);
+        } else if (this.plays === 9) {
+            return 'draw'
+        }
+    };
+
+    //place the piece and return if there is a winner
     place(rowIndex, columnIndex) {
+        //check if the squaere is a valid place or not 
         if (rowIndex !== undefined) {
+            //check the current player
             if (!this.currentPlayer) {
+                //add the apropriete value in the board
                 this._board[rowIndex][columnIndex] = "X";
             } else {
                 this._board[rowIndex][columnIndex] = "O";
             }
+            //increment the nbr of plays
             this.plays += 1;
-            this.currentPlayer = !this.currentPlayer;
-            return this.checkWinner(rowIndex, columnIndex);
-
-
-        }
-    };
-
-    //check for the winner
-    checkWinner(rowIndex, columnIndex) {
-        if (this.checkColumn(columnIndex)) {
-            this.currentPlayer = !this.currentPlayer;
-            return this.checkColumn(columnIndex);
-        } else if (this.checkRow(rowIndex)) {
-            this.currentPlayer = !this.currentPlayer;
-            return this.checkRow(rowIndex);
-        } else if (this.checkDiagonals(rowIndex, columnIndex)) {
-            this.currentPlayer = !this.currentPlayer;
-            return this.checkDiagonals(rowIndex, columnIndex);
-        } else if (this.plays === 9) {
-            this.currentPlayer = !this.currentPlayer;
-            return 'draw'
+            //return if there is a winner
+            let winner = this.checkWinner(rowIndex, columnIndex);
+            if (!winner) {
+                //change the curent player
+                this.currentPlayer = !this.currentPlayer;
+            }
+            return winner;
         }
     };
 
@@ -135,6 +141,9 @@ class Player {
     }
 }
 
+
+/* *******************************      Helper Functions Declaration       ************************************* */
+
 const renderPlay = (currentPlayer, event) => {
     let img = document.createElement("IMG");
     if (!currentPlayer) {
@@ -143,7 +152,6 @@ const renderPlay = (currentPlayer, event) => {
         img.src = "/Images/O.png";
     }
     event.target.appendChild(img)
-
 }
 
 function renderUpdatedScores(player1, player2) {
@@ -151,33 +159,45 @@ function renderUpdatedScores(player1, player2) {
     player2_score.innerHTML = player2.wins;
 }
 
+function renderNames(player1, player2) {
+    const player1Name = document.querySelector('#player1').value || "Player 1";
+    const player2Name = document.querySelector('#player2').value || "Player 2";
+    //render the names of the players in the DOM
+    player2_name.innerHTML = player2Name;
+    player1_name.innerHTML = player1Name;
+    //asign the respective names of the player in the class
+    player1.name = player1Name;
+    player2.name = player2Name;
+}
 
+/* *******************************      DOM Listening and rendering       ************************************* */
 
 
 start.addEventListener('click', (e) => {
+
     container.classList.toggle('hide');
     info.classList.toggle('hide')
 
+    /* ***********   Intentiate the players and the game    ************* */
 
-    const player1Name = document.querySelector('#player1').value || "Player 1";
-    const player2Name = document.querySelector('#player2').value || "Player 2";
-    let player1 = new Player(player1Name);
-    let player2 = new Player(player2Name);
-    player2_name.innerHTML = player2.name;
-    player1_name.innerHTML = player1.name;
     let play = new Game();
+    let player1 = new Player();
+    let player2 = new Player();
+    renderNames(player1, player2)
 
-    cases.forEach(elm => {
+    /* ***********   Start listening to the game    ************* */
+
+    square.forEach(elm => {
         elm.addEventListener("click", (e) => {
 
-            renderPlay(play.currentPlayer, e)
+            let rowIndex = parseInt(e.target.id[0]);
+            let columnIndex = parseInt(e.target.id[1]);
 
-            let rowIndex = parseInt(e.target.id[0])
-            let columnIndex = parseInt(e.target.id[1])
-
-
+            //place the piece and check for the result
             var result = play.place(rowIndex, columnIndex);
-            console.log(result)
+            //render the piece on the DOM
+            renderPlay(play.currentPlayer, e);
+            //check for winner or draw
             if (result) {
                 if (result === "X") {
                     player1.updateScore();
@@ -190,11 +210,13 @@ start.addEventListener('click', (e) => {
                 } else {
                     alert(`it's a draw`);
                 }
+                //reset the board
                 play.reset();
             }
         });
     });
 
+    /* ***********   Restart the game    ************* */
 
     reset.addEventListener('click', (e) => {
         play.reset();
@@ -203,5 +225,4 @@ start.addEventListener('click', (e) => {
         player2.resetScore();
         renderUpdatedScores(player1, player2);
     })
-
 })
