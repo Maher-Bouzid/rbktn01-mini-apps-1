@@ -2,8 +2,9 @@ const cases = document.querySelectorAll(".playable");
 const start = document.querySelector('.start');
 const reset = document.querySelector('.reset');
 const container = document.querySelector('.game');
-const info = document.querySelector('.info')
-
+const info = document.querySelector('.info');
+const player1_name = document.querySelector('#player1_name');
+const player2_name = document.querySelector('#player2_name');
 
 
 class Game {
@@ -14,7 +15,7 @@ class Game {
             [0, 0, 0]
         ];
         //to keep track of the player : false for the first player and true for the second
-        this.currentPlayer = "player1";
+        this.currentPlayer = false;
         this.plays = 0;
     };
 
@@ -91,6 +92,7 @@ class Game {
             this.currentPlayer = !this.currentPlayer;
             return this.checkDiagonals(rowIndex, columnIndex);
         } else if (this.plays === 9) {
+            this.currentPlayer = !this.currentPlayer;
             return 'draw'
         }
     };
@@ -132,13 +134,15 @@ class Player {
 start.addEventListener('click', (e) => {
     container.classList.toggle('hide');
     info.classList.toggle('hide')
-    let play = new Game();
 
 
     const player1Name = document.querySelector('#player1').value;
     const player2Name = document.querySelector('#player2').value;
     let player1 = new Player(player1Name);
     let player2 = new Player(player2Name);
+    player2_name.innerHTML = player2.name;
+    player1_name.innerHTML = player1.name;
+    let play = new Game();
 
     cases.forEach(elm => {
         elm.addEventListener("click", (e) => {
@@ -154,11 +158,15 @@ start.addEventListener('click', (e) => {
             let rowIndex = parseInt(e.target.id[0])
             let columnIndex = parseInt(e.target.id[1])
             play.place(rowIndex, columnIndex)
-            if (play.checkWinner(rowIndex, columnIndex)) {
-                if (play.checkWinner(rowIndex, columnIndex) === "X") {
+
+
+
+            var result = play.checkWinner(rowIndex, columnIndex);
+            if (result) {
+                if (result === "X") {
                     player1.updateScore();
                     alert(`${player1.name} won the Game`);
-                } else if (play.checkWinner(rowIndex, columnIndex) === "O") {
+                } else if (result === "O") {
                     player2.updateScore();
                     alert(`${player2.name} won the Game`);
                 } else {
