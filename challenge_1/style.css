@@ -33,3 +33,16 @@ img {
 .hide {
     display: none;
 }
+
+.players {
+    display: flex;
+    justify-content: center;
+    align-content: space-between;
+
+}
+.player {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: space-between;
+}

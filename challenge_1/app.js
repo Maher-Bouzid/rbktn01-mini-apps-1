@@ -2,7 +2,7 @@ const cases = document.querySelectorAll(".playable");
 const start = document.querySelector('.start');
 const reset = document.querySelector('.reset');
 const container = document.querySelector('.game');
-
+const info = document.querySelector('.info')
 
 
 
@@ -14,7 +14,8 @@ class Game {
             [0, 0, 0]
         ];
         //to keep track of the player : false for the first player and true for the second
-        this.currentPlayer = false;
+        this.currentPlayer = "player1";
+        this.plays = 0;
     };
 
     //calculate the score of the row
@@ -69,23 +70,28 @@ class Game {
 
     //place the piece
     place(rowIndex, columnIndex) {
-
         if (!this.currentPlayer) {
             this._board[rowIndex][columnIndex] = "X";
         } else {
             this._board[rowIndex][columnIndex] = "O";
         }
+        this.plays += 1;
         this.currentPlayer = !this.currentPlayer;
     };
 
     //check for the winner
     checkWinner(rowIndex, columnIndex) {
         if (this.checkColumn(columnIndex)) {
+            this.currentPlayer = !this.currentPlayer;
             return this.checkColumn(columnIndex);
         } else if (this.checkRow(rowIndex)) {
+            this.currentPlayer = !this.currentPlayer;
             return this.checkRow(rowIndex);
         } else if (this.checkDiagonals(rowIndex, columnIndex)) {
+            this.currentPlayer = !this.currentPlayer;
             return this.checkDiagonals(rowIndex, columnIndex);
+        } else if (this.plays === 9) {
+            return 'draw'
         }
     };
 
@@ -97,7 +103,8 @@ class Game {
             [0, 0, 0],
             [0, 0, 0]
         ];
-        this.currentPlayer = false;
+        this.plays = 0;
+        //remove all the images from the board
         images.forEach(elm => {
             elm.remove()
         })
@@ -108,10 +115,14 @@ class Player {
     constructor(name) {
         this.name = name;
         this.wins = 0;
-    }
+    };
 
     updateScore() {
         this.wins += 1;
+    };
+
+    resetScore() {
+        this.wins = 0;
     }
 }
 
@@ -120,10 +131,14 @@ class Player {
 
 start.addEventListener('click', (e) => {
     container.classList.toggle('hide');
-    start.classList.toggle('hide')
+    info.classList.toggle('hide')
     let play = new Game();
-    let player1 = new Player('1');
-    let player2 = new Player('2');
+
+
+    const player1Name = document.querySelector('#player1').value;
+    const player2Name = document.querySelector('#player2').value;
+    let player1 = new Player(player1Name);
+    let player2 = new Player(player2Name);
 
     cases.forEach(elm => {
         elm.addEventListener("click", (e) => {
@@ -136,7 +151,6 @@ start.addEventListener('click', (e) => {
                 img.src = "/Images/O.png";
             }
             e.target.appendChild(img)
-
             let rowIndex = parseInt(e.target.id[0])
             let columnIndex = parseInt(e.target.id[1])
             play.place(rowIndex, columnIndex)
@@ -144,9 +158,11 @@ start.addEventListener('click', (e) => {
                 if (play.checkWinner(rowIndex, columnIndex) === "X") {
                     player1.updateScore();
                     alert(`${player1.name} won the Game`);
-                } else {
+                } else if (play.checkWinner(rowIndex, columnIndex) === "O") {
                     player2.updateScore();
                     alert(`${player2.name} won the Game`);
+                } else {
+                    alert(`it's a draw`);
                 }
                 play.reset();
             }
@@ -156,6 +172,8 @@ start.addEventListener('click', (e) => {
 
     reset.addEventListener('click', (e) => {
         play.reset();
+        player1.resetScore();
+        player2.resetScore();
     })
 
 })

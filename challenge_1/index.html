@@ -10,8 +10,24 @@
 </head>
 
 <body>
-    <button class="start">Start</button>
+    <div class="info">
+        <label>Player 1</label>
+        <input type="text" placeholder="Name" id='player1'>
+        <label>Player 2</label>
+        <input type="text" placeholder="Name" id='player2'>
+        <button class="start">Start</button>
+    </div>
     <div class="game hide">
+        <div class="players">
+            <div id='player'>
+                <h2 id='player1_name'>Player1</h2>
+                <h2 id='player1_score'>0</h2>
+            </div>
+            <div id='player'>
+                <h2 id='player2_name'>Player2</h2>
+                <h2 id='player2_score'>0</h2>
+            </div>
+        </div>
         <div class="container">
             <section id="section0">
                 <div class="playable" id="00"></div>
