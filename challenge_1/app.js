@@ -146,7 +146,7 @@ class Player {
 
 const renderPlay = (currentPlayer, event) => {
     let img = document.createElement("IMG");
-    if (!currentPlayer) {
+    if (currentPlayer) {
         img.src = "/Images/X.png";
     } else {
         img.src = "/Images/O.png";
@@ -157,6 +157,24 @@ const renderPlay = (currentPlayer, event) => {
 function renderUpdatedScores(player1, player2) {
     player1_score.innerHTML = player1.wins;
     player2_score.innerHTML = player2.wins;
+}
+
+function displayWinner(result, player1, player2, play) {
+    if (result) {
+        if (result === "X") {
+            player1.updateScore();
+            renderUpdatedScores(player1, player2);
+            alert(`${player1.name} won the Game`);
+        } else if (result === "O") {
+            player2.updateScore();
+            renderUpdatedScores(player1, player2);
+            alert(`${player2.name} won the Game`);
+        } else {
+            alert(`it's a draw`);
+        }
+        //reset the board
+        play.reset();
+    }
 }
 
 function renderNames(player1, player2) {
@@ -176,7 +194,7 @@ function renderNames(player1, player2) {
 start.addEventListener('click', (e) => {
 
     container.classList.toggle('hide');
-    info.classList.toggle('hide')
+    info.style.display = 'none'
 
     /* ***********   Intentiate the players and the game    ************* */
 
@@ -198,21 +216,7 @@ start.addEventListener('click', (e) => {
             //render the piece on the DOM
             renderPlay(play.currentPlayer, e);
             //check for winner or draw
-            if (result) {
-                if (result === "X") {
-                    player1.updateScore();
-                    renderUpdatedScores(player1, player2);
-                    alert(`${player1.name} won the Game`);
-                } else if (result === "O") {
-                    player2.updateScore();
-                    renderUpdatedScores(player1, player2);
-                    alert(`${player2.name} won the Game`);
-                } else {
-                    alert(`it's a draw`);
-                }
-                //reset the board
-                play.reset();
-            }
+            displayWinner(result, player1, player2, play);
         });
     });
 
