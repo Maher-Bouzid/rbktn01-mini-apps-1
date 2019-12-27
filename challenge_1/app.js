@@ -1,6 +1,5 @@
 const cases = document.querySelectorAll(".playable")
-let X = document.createElement("IMG");
-X.src = "/Images/X.png";
+
 class Game {
     constructor() {
         this._board = [
@@ -10,8 +9,6 @@ class Game {
         ];
         //to keep track of the player : false for the first player and true for the second
         this.currentPlayer = false;
-        //to see if the game started or not
-        this.game = false;
     };
 
     //calculate the score of the row
@@ -32,16 +29,39 @@ class Game {
         return current;
     };
 
-    //calculate the score of the diagonal
-    checkDaiagonal(rowIndex, columnIndex) {
-        let score = 0;
-        while (rowIndex < 3) {
-            score += this._board[rowIndex][columnIndex];
-            rowIndex++;
-            columnIndex++;
+    checkDiagonals(rowIndex, columnIndex) {
+        //calculate the score of the first diagonal
+        function checkFirstDiagonal(rowIndex, columnIndex) {
+            let current = this._board[rowIndex][columnIndex];
+            while (rowIndex < 3) {
+                rowIndex++;
+                columnIndex++;
+                if (current !== this._board[rowIndex][columnIndex]) return false;
+            }
+            return current;
+        };
+
+        //check the second diagonal
+        function checkSecondDiagonal(rowIndex, columnIndex) {
+            let current = this._board[rowIndex][columnIndex];
+            while (rowIndex < 3) {
+                rowIndex++;
+                columnIndex--;
+                if (current !== this._board[rowIndex][columnIndex]) return false;
+            }
+            return current;
+        };
+
+        if (rowIndex === 1 && columnIndex === 1) {
+            return checkFirstDiagonal(rowIndex, columnIndex) || checkSecondDiagonal(rowIndex, columnIndex);
+        } else if (rowIndex === columnIndex) {
+            return checkFirstDiagonal(rowIndex, columnIndex);
+        } else {
+            return checkSecondDiagonal(rowIndex, columnIndex)
         }
-        return score;
-    };
+
+    }
+
 
     //place the piece
     place(rowIndex, columnIndex) {
@@ -57,10 +77,11 @@ class Game {
     //check for the winner
     checkWinner(rowIndex, columnIndex) {
         if (this.checkColumn(columnIndex)) {
-            console.log('column : ', this.checkColumn(columnIndex))
+            return this.checkColumn(columnIndex);
         } else if (this.checkRow(rowIndex)) {
-            console.log('row : ', this.checkRow(rowIndex))
+            return this.checkRow(rowIndex);
         }
+        console.log(`diagonal ${rowIndex}${columnIndex}`, this.checkDiagonals(rowIndex, columnIndex))
     }
     //restart the game
     restart() {
@@ -80,9 +101,8 @@ class Game {
 let play = new Game()
 cases.forEach(elm => {
     elm.addEventListener("click", (e) => {
-        // if(play.game){
-        // }
-        // appendChild(img)
+
+
         let img = document.createElement("IMG");
         if (!play.currentPlayer) {
             img.src = "/Images/X.png";
@@ -94,7 +114,7 @@ cases.forEach(elm => {
         let rowIndex = parseInt(e.target.id[0])
         let columnIndex = parseInt(e.target.id[1])
         play.place(rowIndex, columnIndex)
-        play.checkWinner(rowIndex, columnIndex)
+        console.log(play.checkWinner(rowIndex, columnIndex))
         console.table(play._board)
     })
 })
