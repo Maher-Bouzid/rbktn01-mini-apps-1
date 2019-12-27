@@ -73,13 +73,18 @@ class Game {
 
     //place the piece
     place(rowIndex, columnIndex) {
-        if (!this.currentPlayer) {
-            this._board[rowIndex][columnIndex] = "X";
-        } else {
-            this._board[rowIndex][columnIndex] = "O";
+        if (rowIndex !== undefined) {
+            if (!this.currentPlayer) {
+                this._board[rowIndex][columnIndex] = "X";
+            } else {
+                this._board[rowIndex][columnIndex] = "O";
+            }
+            this.plays += 1;
+            this.currentPlayer = !this.currentPlayer;
+            return this.checkWinner(rowIndex, columnIndex);
+
+
         }
-        this.plays += 1;
-        this.currentPlayer = !this.currentPlayer;
     };
 
     //check for the winner
@@ -141,14 +146,18 @@ const renderPlay = (currentPlayer, event) => {
 
 }
 
+function renderUpdatedScores(player1, player2) {
+    player1_score.innerHTML = player1.wins;
+    player2_score.innerHTML = player2.wins;
+}
+
+
+
+
 start.addEventListener('click', (e) => {
     container.classList.toggle('hide');
     info.classList.toggle('hide')
 
-    function renderUpdatedScores() {
-        player1_score.innerHTML = player1.wins;
-        player2_score.innerHTML = player2.wins;
-    }
 
     const player1Name = document.querySelector('#player1').value || "Player 1";
     const player2Name = document.querySelector('#player2').value || "Player 2";
@@ -161,25 +170,22 @@ start.addEventListener('click', (e) => {
     cases.forEach(elm => {
         elm.addEventListener("click", (e) => {
 
-
             renderPlay(play.currentPlayer, e)
-
 
             let rowIndex = parseInt(e.target.id[0])
             let columnIndex = parseInt(e.target.id[1])
-            play.place(rowIndex, columnIndex)
 
 
-
-            var result = play.checkWinner(rowIndex, columnIndex);
+            var result = play.place(rowIndex, columnIndex);
+            console.log(result)
             if (result) {
                 if (result === "X") {
                     player1.updateScore();
-                    renderUpdatedScores();
+                    renderUpdatedScores(player1, player2);
                     alert(`${player1.name} won the Game`);
                 } else if (result === "O") {
                     player2.updateScore();
-                    renderUpdatedScores();
+                    renderUpdatedScores(player1, player2);
                     alert(`${player2.name} won the Game`);
                 } else {
                     alert(`it's a draw`);
@@ -192,9 +198,10 @@ start.addEventListener('click', (e) => {
 
     reset.addEventListener('click', (e) => {
         play.reset();
+        play.currentPlayer = false;
         player1.resetScore();
         player2.resetScore();
-        renderUpdatedScores();
+        renderUpdatedScores(player1, player2);
     })
 
 })
