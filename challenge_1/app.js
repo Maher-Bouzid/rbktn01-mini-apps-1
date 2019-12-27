@@ -5,6 +5,8 @@ const container = document.querySelector('.game');
 const info = document.querySelector('.info');
 const player1_name = document.querySelector('#player1_name');
 const player2_name = document.querySelector('#player2_name');
+const player1_score = document.querySelector('#player1_score');
+const player2_score = document.querySelector('#player2_score');
 
 
 class Game {
@@ -128,16 +130,28 @@ class Player {
     }
 }
 
+const renderPlay = (currentPlayer, event) => {
+    let img = document.createElement("IMG");
+    if (!currentPlayer) {
+        img.src = "/Images/X.png";
+    } else {
+        img.src = "/Images/O.png";
+    }
+    event.target.appendChild(img)
 
-
+}
 
 start.addEventListener('click', (e) => {
     container.classList.toggle('hide');
     info.classList.toggle('hide')
 
+    function renderUpdatedScores() {
+        player1_score.innerHTML = player1.wins;
+        player2_score.innerHTML = player2.wins;
+    }
 
-    const player1Name = document.querySelector('#player1').value;
-    const player2Name = document.querySelector('#player2').value;
+    const player1Name = document.querySelector('#player1').value || "Player 1";
+    const player2Name = document.querySelector('#player2').value || "Player 2";
     let player1 = new Player(player1Name);
     let player2 = new Player(player2Name);
     player2_name.innerHTML = player2.name;
@@ -148,13 +162,9 @@ start.addEventListener('click', (e) => {
         elm.addEventListener("click", (e) => {
 
 
-            let img = document.createElement("IMG");
-            if (!play.currentPlayer) {
-                img.src = "/Images/X.png";
-            } else {
-                img.src = "/Images/O.png";
-            }
-            e.target.appendChild(img)
+            renderPlay(play.currentPlayer, e)
+
+
             let rowIndex = parseInt(e.target.id[0])
             let columnIndex = parseInt(e.target.id[1])
             play.place(rowIndex, columnIndex)
@@ -165,9 +175,11 @@ start.addEventListener('click', (e) => {
             if (result) {
                 if (result === "X") {
                     player1.updateScore();
+                    renderUpdatedScores();
                     alert(`${player1.name} won the Game`);
                 } else if (result === "O") {
                     player2.updateScore();
+                    renderUpdatedScores();
                     alert(`${player2.name} won the Game`);
                 } else {
                     alert(`it's a draw`);
@@ -182,6 +194,7 @@ start.addEventListener('click', (e) => {
         play.reset();
         player1.resetScore();
         player2.resetScore();
+        renderUpdatedScores();
     })
 
 })
