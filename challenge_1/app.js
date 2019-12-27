@@ -230,3 +230,4 @@ start.addEventListener('click', (e) => {
         renderUpdatedScores(player1, player2);
     })
 })
+
