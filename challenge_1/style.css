@@ -30,3 +30,6 @@ section {
 img {
     height: 100%;
 }
+.hide {
+    display: none;
+}

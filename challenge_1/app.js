@@ -1,4 +1,10 @@
-const cases = document.querySelectorAll(".playable")
+const cases = document.querySelectorAll(".playable");
+const start = document.querySelector('.start');
+const reset = document.querySelector('.reset');
+const container = document.querySelector('.game');
+
+
+
 
 class Game {
     constructor() {
@@ -59,13 +65,11 @@ class Game {
         } else {
             return checkSecondDiagonal(0, 2)
         }
-
     }
-
 
     //place the piece
     place(rowIndex, columnIndex) {
-        this.game = true;
+
         if (!this.currentPlayer) {
             this._board[rowIndex][columnIndex] = "X";
         } else {
@@ -83,39 +87,75 @@ class Game {
         } else if (this.checkDiagonals(rowIndex, columnIndex)) {
             return this.checkDiagonals(rowIndex, columnIndex);
         }
-    }
+    };
+
     //restart the game
-    restart() {
+    reset() {
+        const images = document.querySelectorAll('img');
         this._board = [
             [0, 0, 0],
             [0, 0, 0],
             [0, 0, 0]
         ];
         this.currentPlayer = false;
+        images.forEach(elm => {
+            elm.remove()
+        })
     };
+}
+
+class Player {
+    constructor(name) {
+        this.name = name;
+        this.wins = 0;
+    }
+
+    updateScore() {
+        this.wins += 1;
+    }
 }
 
 
 
-//need to hundle the click event
-//need to use forEach
-let play = new Game()
-cases.forEach(elm => {
-    elm.addEventListener("click", (e) => {
+
+start.addEventListener('click', (e) => {
+    container.classList.toggle('hide');
+    start.classList.toggle('hide')
+    let play = new Game();
+    let player1 = new Player('1');
+    let player2 = new Player('2');
+
+    cases.forEach(elm => {
+        elm.addEventListener("click", (e) => {
 
 
-        let img = document.createElement("IMG");
-        if (!play.currentPlayer) {
-            img.src = "/Images/X.png";
-        } else {
-            img.src = "/Images/O.png";
-        }
-        e.target.appendChild(img)
+            let img = document.createElement("IMG");
+            if (!play.currentPlayer) {
+                img.src = "/Images/X.png";
+            } else {
+                img.src = "/Images/O.png";
+            }
+            e.target.appendChild(img)
 
-        let rowIndex = parseInt(e.target.id[0])
-        let columnIndex = parseInt(e.target.id[1])
-        play.place(rowIndex, columnIndex)
-        console.log(play.checkWinner(rowIndex, columnIndex))
-        console.table(play._board)
+            let rowIndex = parseInt(e.target.id[0])
+            let columnIndex = parseInt(e.target.id[1])
+            play.place(rowIndex, columnIndex)
+            if (play.checkWinner(rowIndex, columnIndex)) {
+                if (play.checkWinner(rowIndex, columnIndex) === "X") {
+                    player1.updateScore();
+                    alert(`${player1.name} won the Game`);
+                } else {
+                    player2.updateScore();
+                    alert(`${player2.name} won the Game`);
+                }
+                play.reset();
+            }
+        });
+    });
+
+
+    reset.addEventListener('click', (e) => {
+        play.reset();
     })
+
 })
