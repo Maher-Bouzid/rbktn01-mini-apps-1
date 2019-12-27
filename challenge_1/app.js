@@ -90,7 +90,7 @@ class Game {
     //place the piece and return if there is a winner
     place(rowIndex, columnIndex) {
         //check if the squaere is a valid place or not 
-        if (rowIndex !== undefined) {
+        if (!Number.isNaN(rowIndex)) {
             //check the current player
             if (!this.currentPlayer) {
                 //add the apropriete value in the board
@@ -230,4 +230,3 @@ start.addEventListener('click', (e) => {
         renderUpdatedScores(player1, player2);
     })
 })
-
