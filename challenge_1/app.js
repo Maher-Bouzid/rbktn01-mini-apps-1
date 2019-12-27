@@ -31,33 +31,33 @@ class Game {
 
     checkDiagonals(rowIndex, columnIndex) {
         //calculate the score of the first diagonal
-        function checkFirstDiagonal(rowIndex, columnIndex) {
-            let current = this._board[rowIndex][columnIndex];
-            while (rowIndex < 3) {
+        let checkFirstDiagonal = (rowIndex, columnIndex) => {
+            let current = this._board[0][0];
+            while (rowIndex < 3 && columnIndex < 3) {
+                if (current !== this._board[rowIndex][columnIndex] || !this._board[rowIndex][columnIndex]) return false;
                 rowIndex++;
                 columnIndex++;
-                if (current !== this._board[rowIndex][columnIndex]) return false;
             }
             return current;
         };
 
         //check the second diagonal
-        function checkSecondDiagonal(rowIndex, columnIndex) {
-            let current = this._board[rowIndex][columnIndex];
-            while (rowIndex < 3) {
+        let checkSecondDiagonal = (rowIndex, columnIndex) => {
+            let current = this._board[0][2];
+            while (rowIndex < 3 && columnIndex < 3) {
+                if (current !== this._board[rowIndex][columnIndex] || !this._board[rowIndex][columnIndex]) return false;
                 rowIndex++;
                 columnIndex--;
-                if (current !== this._board[rowIndex][columnIndex]) return false;
             }
             return current;
         };
 
         if (rowIndex === 1 && columnIndex === 1) {
-            return checkFirstDiagonal(rowIndex, columnIndex) || checkSecondDiagonal(rowIndex, columnIndex);
+            return checkFirstDiagonal(0, 0) || checkSecondDiagonal(0, 2);
         } else if (rowIndex === columnIndex) {
-            return checkFirstDiagonal(rowIndex, columnIndex);
+            return checkFirstDiagonal(0, 0);
         } else {
-            return checkSecondDiagonal(rowIndex, columnIndex)
+            return checkSecondDiagonal(0, 2)
         }
 
     }
@@ -80,8 +80,9 @@ class Game {
             return this.checkColumn(columnIndex);
         } else if (this.checkRow(rowIndex)) {
             return this.checkRow(rowIndex);
+        } else if (this.checkDiagonals(rowIndex, columnIndex)) {
+            return this.checkDiagonals(rowIndex, columnIndex);
         }
-        console.log(`diagonal ${rowIndex}${columnIndex}`, this.checkDiagonals(rowIndex, columnIndex))
     }
     //restart the game
     restart() {
