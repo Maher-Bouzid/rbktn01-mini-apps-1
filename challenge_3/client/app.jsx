@@ -12,12 +12,13 @@ class App extends React.Component {
 		e.preventDefault()
 		let dec = this.state.currentForm - 1;
 		this.setState({
-			currentForm: dec
+			currentForm: dec,
+			data: {}
 		})
 	}
 
 	getData(e) {
-		e.preventDefault();
+		// e.preventDefault();
 		console.log(e)
 		let inc = this.state.currentForm + 1;
 		let data = this.state.data;
@@ -61,15 +62,15 @@ class Form1 extends React.Component {
 	render() {
 		return (
 			<div>
-				<form action="/form" method="post" target="_blanck">
+				<form action="/form" methode='POST' target="_blanck">
 					<label>First Name</label>
-					<input type="text" required name="firstName" id='firstName' value={this.props.states.firstName} /><br />
+					<input type="text" name="firstName" id='firstName' value={this.props.states.firstName} required /><br />
 					<label>Last Name</label>
-					<input type="text" required name="lastName" id='lastName' value={this.props.states.lastName} /><br />
+					<input type="text" name="lastName" id='lastName' value={this.props.states.lastName} required /><br />
 					<label>Email</label>
-					<input type="email" required name="email" id='email' value={this.props.states.email} /><br />
+					<input type="email" name="email" id='email' value={this.props.states.email} required /><br />
 					<label>Password</label>
-					<input type="password" required name="password" id='password' /><br />
+					<input type="password" name="password" id='password' required /><br />
 					<input type="submit" value="NEXT" onClick={this.props.getData.bind(this)} />
 				</form>
 			</div>
@@ -81,7 +82,7 @@ class Form2 extends React.Component {
 	render() {
 		return (
 			<div>
-				<form action="/form" method="post" target="_blanck">
+				<form action="#" method="post" target="_blanck">
 					<label>line 1</label>
 					<input type="text" required name="line1" id='line1' value={this.props.states.line1} /><br />
 					<label>line2</label>
@@ -102,7 +103,7 @@ class Form3 extends React.Component {
 	render() {
 		return (
 			<div>
-				<form action="/form" method="post" target="_blanck">
+				<form action="" method="post" target="_blanck">
 					<label>credit card #</label>
 					<input type="text" required name="creditCard" id='creditCard' value={this.props.states.creditCard} /><br />
 					<label>expiry date</label>
