@@ -1,6 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
+const fs = require('fs');
+
 const { jsonToCsv } = require('./modules/jsonToCsv')
 
 const App = express();
@@ -22,11 +24,13 @@ App.get("/", (req, res) => {
     res.status(200).send('Hi')
 });
 
-App.post("/", (req, res) => {
-    //need to remove the ; in the front end
-    console.log(jsonToCsv(JSON.parse(req.body.data)));
-
-    res.status(201).redirect('/')
+App.post("/form", (req, res) => {
+    if (req.body.data.length) {
+        // console.log(req.body.data)
+        res.status(201).json(jsonToCsv(JSON.parse(req.body.data)));
+    } else {
+        res.send('Not valid data');
+    }
 });
 
 
