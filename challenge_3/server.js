@@ -8,7 +8,7 @@ app.use(express.static(path.join(__dirname, '/public')));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-const PORT = 8000;
+const PORT = 8080;
 app.listen(PORT, () => {
     console.log(`Server listening in port ${PORT}`)
 })

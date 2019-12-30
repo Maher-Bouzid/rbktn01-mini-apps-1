@@ -13,7 +13,6 @@ class App extends React.Component {
 		let dec = this.state.currentForm - 1;
 		this.setState({
 			currentForm: dec,
-			data: {}
 		})
 	}
 
@@ -40,7 +39,8 @@ class App extends React.Component {
 			data: this.state.data
 		}).then(() => {
 			this.setState({
-				currentForm: 0
+				currentForm: 0,
+				data: {}
 			})
 		})
 	}
@@ -107,11 +107,11 @@ class Form3 extends React.Component {
 					<label>credit card #</label>
 					<input type="text" required name="creditCard" id='creditCard' value={this.props.states.creditCard} /><br />
 					<label>expiry date</label>
-					<input type="date" required name="expiryDate" id='expiryDate' value={this.props.states.expiryDate} /><br />
+					<input type="month" required name="expiryDate" id='expiryDate' value={this.props.states.expiryDate} /><br />
 					<label>CVV</label>
-					<input type="email" required name="CVV" id='CVV' value={this.props.states.CVV} /><br />
+					<input type="text" required name="CVV" id='CVV' value={this.props.states.CVV} /><br />
 					<label>Billing zip code</label>
-					<input type="password" required name="billingZipCode" id='billingZipCode' value={this.props.states.billingZipCode} /><br />
+					<input type="text" required name="billingZipCode" id='billingZipCode' value={this.props.states.billingZipCode} /><br />
 					<input type="submit" value="PREVIOUS" onClick={this.props.previous.bind(this)} />
 					<input type="submit" value="NEXT" onClick={this.props.getData.bind(this)} />
 				</form>
